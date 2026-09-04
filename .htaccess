@@ -1,18 +1,32 @@
 RewriteEngine On
 
-# =====================================================
-# HILANGKAN .php DARI URL
-# =====================================================
+# =========================================================
+# 1. Jangan rewrite file/folder yang benar-benar ada
+# =========================================================
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+
+# =========================================================
+# 2. Extensionless URL -> PHP
+# =========================================================
+
+RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.+?)/?$ $1.php [L]
 
 
-# =====================================================
-# REDIRECT URL YANG MASIH MENGGUNAKAN .php
-# KE URL TANPA .php
-# =====================================================
+# =========================================================
+# 3. 404
+# =========================================================
 
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
-RewriteRule ^(.+?)\.php$ /$1 [R=301,L,NE]
+RewriteRule ^ errors/404.php [L]
+
+
+# =========================================================
+# 4. Error Handler
+# =========================================================
+
+ErrorDocument 403 /medisafe_personal/errors/403.php
+ErrorDocument 500 /medisafe_personal/errors/500.php
